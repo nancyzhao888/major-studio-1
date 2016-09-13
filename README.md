@@ -22,11 +22,16 @@
 4. [Financing Education In Sub-Saharan Africa - Meeting the Challenges of Expansion, Equity and Quality (UNESCO Report)](unesdoc.unesco.org/images/0019/001921/192186e.pdf)
 
 ##### Questions:
+###### Technical Questions:
 1. What is a more effective indicator for measuring education spending? - as % of GDP, or as % of total government expenditure, or $ per student?
-2. What is the main source of education financing in Sub-Saharan Africa? ![alt text](https://github.com/nancyzhao888/major-studio-1/blob/master/Education%20Financing%20Flow.png "Logo Title Text 1")
-3. According to most reports, public education spending in Africa has been increasing every year (total % of GDP puts Africa in the top three in the world). However, in one-third of the region's countries, half of the kids still do not complete primary education. Why is that? Where does the money go?
-4. What does the African government prioritize to fund first? - Primary or secondary schools? Textbooks or teacher salaries? And what do you care more about, expanding access or improving the quality of education?
-5. Does devoting more resources to education affect the distribution of income or does the level of income inequality affect the amount of resources devoted to public education?
+2. Is there a better / more comprehensive data source than UNESCO for education financing data? 
+
+###### Context Questions:
+1. What is the main source of education financing in Sub-Saharan Africa? ![alt text](https://github.com/nancyzhao888/major-studio-1/blob/master/Education%20Financing%20Flow.png "Logo Title Text 1")
+2. According to most reports, public education spending in Africa has been increasing every year (total % of GDP puts Africa in the top three in the world). However, in one-third of the region's countries, half of the kids still do not complete primary education. Why is that? Where does the money go?
+3. What does the African government prioritize to fund first? - Primary or secondary schools? Textbooks or teacher salaries? And what do you care more about, expanding access or improving the quality of education?
+4. Does devoting more resources to education affect the distribution of income or does the level of income inequality affect the amount of resources devoted to public education?
+
 
 _________________________________________________________________________________
 
@@ -60,6 +65,7 @@ ________________________________________________________________________________
 1. Mehlum, Halvor, Karl Moene and Ragnar Torvik (2006). Institutions and the Resource Curse, The Economic Journal, 116, 1-20.
 2. Brunnschweiler, C. N. and E. H. Bulte (2006). Reverse Causality and the Resource Curse : Paradoxes and Red Herrings. Mimeo: Tilburg.
     
+
 ##### Supplement Source:
 1. [Transparency International Corruption Perception Index](http://www.transparency.org/research/cpi/overview)
     
