@@ -88,14 +88,14 @@ function showData(data) {
             text('Malawi, Namibia, Sao Tome And Principe,', 300, rowHeight*4.1-30);
             text('Seychelles, South Africa, Swaziland, Zimbabwe', 300, rowHeight*4.1-20);
     textSize(10);
-            text('Education Spending < 3.4', 300, rowHeight-35);
-            text('3.4 < Education Spending < 3.7', 300, rowHeight*2.1-50);
-            text('3.7 < Education Spending < 4.6', 300, rowHeight*3.1-50);
+            text('Education Spending (% of GDP) < 3.4', 300, rowHeight-35);
+            text('3.4 < Education Spending (% of GDP) < 3.7', 300, rowHeight*2.1-50);
+            text('3.7 < Education Spending (% of GDP) < 4.6', 300, rowHeight*3.1-50);
             text('Education Spending > 4.6 ', 300, rowHeight*4.1-50);
             fill(242,70,50);
             text('Gini Coefficient', width-375, 50);
             fill(13, 150, 158);
-            text('Education Spending', width-375, 40);
+            text('Education Spending as % of GDP', width-375, 40);
 }
 
 // education spending
