@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+            svg {
+                background: black;
+            }
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <script>
+            d3.select('body')
+                .append('svg')
+                .attr('height', innerHeight)
+                .attr('width', innerWidth)// if leave svg attributes blank, size will be 100 * 100
+                .on('mousemove', particle); // callback eachtime mouse moves
+            
+            var svg = d3.select('svg'); // select, selectAll
+            
+            
+            
+            function particle() {
+                var m = d3.mouse(this); // m is a two-element array of mouse's position [x,y]
+                
+                svg.insert('circle') // the circle sticks around
+                //.insert is first. append is last.
+                    .attr('r', 0) //radius
+                    .attr('cx', m[0]) //
+                    .attr('cy', m[1])
+                    .style('stroke', 'white')
+                    .style('stroke-opacity', 1)
+                .transition()
+                    .duration(2000)
+                    //.ease(Math, sqrt)
+                    .attr('r', 100) //enlarges from 25 to 100 in 2 seconds
+                    .style('stroke-opacity', 0)
+                    .remove(); // exit strategy    
+            }
+        </script>
+    </body>
+</html>
