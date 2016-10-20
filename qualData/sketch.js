@@ -76,7 +76,7 @@ function callback(ranking) {
     var titleWidth = textWidth(str);
     textSize(15);
     textStyle(ITALIC);
-    text('An Education Quality Analysis of Africa', 55+titleWidth, 30)
+    text('An Education Quality Analysis of African Secondary Schools', 55+titleWidth, 30)
     textSize(10);
     textStyle(NORMAL);
     text('Teacher-Pupil Ratio (1991-2010)', 50, 50);
