@@ -1,4 +1,4 @@
- >  I am studying the correlation between education spending and economic inequality in Africa in order to understand how human capital investment can alleviate inequality. I am using education spending as % of GDP and the Gini coefficient as my variables. My visualization is based on UNESCO Education Finance and IID-SSA data."
+ >  I am studying the correlation between education spending and economic inequality in Africa in order to understand how human capital investment can alleviate inequality. I am using education spending as % of GDP and the Gini coefficient as my variables. My [visualization](nancyzhao888.github.io/major-studio-1/master/exercises/undp) is based on UNESCO Education Finance and IID-SSA data."
 
 # major-studio-1
 
