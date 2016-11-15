@@ -26,6 +26,7 @@
     </head>
     
     <body style="background-color: #E9E0D6">
+        <label><input type="checkbox"> Sort values</label>
         <h1 style="font-family:Sans-Serif;font-size:17px;">Education Financing and Inequality in Selected Sub-Sahran African Countries</h1>
         <div id='legend' style= 'height: 20px; width: 2000px'></div>
         <div id='figure' style='height: 1000px; width: 2000px; overflow-x: scroll; margin-bottom: 50px;'></div>
@@ -72,6 +73,7 @@
             return {name: name, 
                     x0: x0, 
                     x1: x0 += +d[name],
+                    N: +d.N,
                     n: +d[name]
             };
                 });
@@ -133,6 +135,39 @@
             .style("font" ,"13px sans-serif")
             .style("text-anchor", "begin")
             .text("PRIMARY");
+        
+        d3.select("input").on("change", change);
+
+        var sortTimeout = setTimeout(function() {
+            d3.select("input").property("checked", true).each(change);
+            }, 2000);
+
+        function change() {
+            clearTimeout(sortTimeout);
+
+        // Copy-on-write since tweens are evaluated after a delay.
+        var y0 = y.domain(data.sort(this.checked
+            ? function(a, b) { return b.N - a.N; }
+            : function(a, b) { return d3.ascending(a.Country, b.Country); })
+            .map(function(d) { return d.Country; }))
+            .copy();
+    
+        chart1.selectAll(".bar")
+            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+    
+        var transition = chart1.transition().duration(750),
+            delay = function(d, i) { return i * 50; };
+    
+        transition.selectAll(".bar")
+            .delay(delay)
+            .attr("y", function(d) { return y0(d.Country); });
+    
+        transition.select(".y.axis")
+            .call(yAxis)
+          .selectAll("g")
+            .delay(delay);
+        }
+        
             
         });  
             
@@ -156,6 +191,7 @@
             return {name: name, 
                     x0: x0, 
                     x1: x0 += +d[name],
+                    N: +d.N,
                     n: +d[name]
             };
                 });
@@ -217,6 +253,38 @@
             .style("font" ,"13px sans-serif")
             .style("text-anchor", "begin")
             .text("SECONDARY");
+        
+        d3.select("input").on("change", change);
+
+        var sortTimeout = setTimeout(function() {
+            d3.select("input").property("checked", true).each(change);
+            }, 2000);
+
+        function change() {
+            clearTimeout(sortTimeout);
+
+        // Copy-on-write since tweens are evaluated after a delay.
+        var y0 = y.domain(data.sort(this.checked
+            ? function(a, b) { return b.N - a.N; }
+            : function(a, b) { return d3.ascending(a.Country, b.Country); })
+            .map(function(d) { return d.Country; }))
+            .copy();
+    
+        chart2.selectAll(".bar")
+            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+    
+        var transition = chart2.transition().duration(750),
+            delay = function(d, i) { return i * 50; };
+    
+        transition.selectAll(".bar")
+            .delay(delay)
+            .attr("y", function(d) { return y0(d.Country); });
+    
+        transition.select(".y.axis")
+            .call(yAxis)
+          .selectAll("g")
+            .delay(delay);
+        }
     
         });
         
@@ -240,6 +308,7 @@
             return {name: name, 
                     x0: x0, 
                     x1: x0 += +d[name],
+                    N: +d.N,
                     n: +d[name]
             };
                 });
@@ -301,6 +370,38 @@
             .style("font" ,"13px sans-serif")
             .style("text-anchor", "begin")
             .text("TERTIARY");
+            
+        d3.select("input").on("change", change);
+
+        var sortTimeout = setTimeout(function() {
+            d3.select("input").property("checked", true).each(change);
+            }, 2000);
+
+        function change() {
+            clearTimeout(sortTimeout);
+
+        // Copy-on-write since tweens are evaluated after a delay.
+        var y0 = y.domain(data.sort(this.checked
+            ? function(a, b) { return b.N - a.N; }
+            : function(a, b) { return d3.ascending(a.Country, b.Country); })
+            .map(function(d) { return d.Country; }))
+            .copy();
+    
+        chart3.selectAll(".bar")
+            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+    
+        var transition = chart3.transition().duration(750),
+            delay = function(d, i) { return i * 50; };
+    
+        transition.selectAll(".bar")
+            .delay(delay)
+            .attr("y", function(d) { return y0(d.Country); });
+    
+        transition.select(".y.axis")
+            .call(yAxis)
+          .selectAll("g")
+            .delay(delay);
+        }
     
         });
           
