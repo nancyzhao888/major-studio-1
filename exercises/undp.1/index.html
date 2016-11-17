@@ -18,6 +18,19 @@
           stroke: #000;
           shape-rendering: crispEdges;
         }
+        
+        .tooltip {
+          position: absolute;
+          text-align: center;
+          width: 60px;
+          height: 12px;
+          padding: 8px;
+          margin-top: -20px;
+          font: 10px sans-serif;
+          background: #ddd;
+          pointer-events: none;
+        }
+
 
         </style>
 
@@ -26,10 +39,13 @@
     </head>
     
     <body style="background-color: #E9E0D6">
-        <label><input type="checkbox"> Sort values</label>
-        <h1 style="font-family:Sans-Serif;font-size:17px;">Education Financing and Inequality in Selected Sub-Sahran African Countries</h1>
-        <div id='legend' style= 'height: 20px; width: 2000px'></div>
-        <div id='figure' style='height: 1000px; width: 2000px; overflow-x: scroll; margin-bottom: 50px;'></div>
+        <button id="sortP" onclick="sortBars1()" style="font-family:sans-serif; font-size:10px; margin-left: 20px">Sort Primary</button>
+        <button id="sortS" onclick="sortBars2()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Secondary</button>
+        <button id="sortT" onclick="sortBars3()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Tertiary</button>
+        <h1 style="font-family:Sans-Serif;font-size:17px;margin-left:20px">Education Financing and Inequality in Selected Sub-Sahran African Countries</h1>
+        <div id='legend' style= 'height: 25px; width: 2000px'></div>
+        <div id='figure' style='height: 805px; width: 2000px; overflow-x: scroll; margin-bottom: 30px;'></div>
+        <div id='source' style='height: 50px; width: 2000px;'></div>
      
         <script>
 
@@ -52,7 +68,7 @@
         var yAxis = d3.axisLeft(y);
 
         var chart1 = d3.select('#figure').append('svg')
-            .attr('width', width + margin.left + margin.right)
+            .attr('width', width + margin.left + margin.right*2)
             .attr('height', height + margin.top + margin.bottom)
             .attr('id', 'd3-plot')
         .append("g")
@@ -66,7 +82,7 @@
             
             d['Government'] = parseFloat(d['Government']);
             d['Household'] = parseFloat(d['Household']);
-            d['Foreign Aid'] = parseFloat(d['Foreign Aid'])*200;
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid'])*100;
             
             var x0 = 0;
             d.boxes = color.domain().map(function(name) { 
@@ -74,7 +90,8 @@
                     x0: x0, 
                     x1: x0 += +d[name],
                     N: +d.N,
-                    n: +d[name]
+                    n: +d[name],
+                    gini: d.gini
             };
                 });
             });
@@ -86,17 +103,23 @@
             }));
         
         chart1.append("g")
-            .attr("class", "x axis")
-            .call(xAxis)
+            .attr("class", "x1 axis")
+            .call(xAxis);
 
         chart1.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-        
-        var country = chart1.selectAll(".Country")
+            .attr("class", "y1 axis")
+            .call(yAxis);
+    
+        var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
+            
+        var country = chart1.selectAll(".country")
             .data(data)
             .enter().append("g")
             .attr("class", "bar")
+            .attr("id", "primary")
             .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
             
         var bars = country.selectAll("rect")
@@ -107,19 +130,35 @@
             .attr("height", y.bandwidth())
             .attr("x", function(d) { return x(d.x0); })
             .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-            .style("fill", function(d) { return color(d.name); });
-        
-        bars.append("text")
-            .attr("x", function(d) { return x(d.x0); })
-            .attr("y", y.bandwidth()/2)
-            .attr("dy", "0.5em")
-            .attr("dx", "0.5em")
-            .style("font" ,"7px sans-serif")
-            .style("text-anchor", "begin")
-            .text(function(d) { 
-                if (d.n== 0 || d.name=='Foreign Aid') 
-                    return d.n = '';
-                else return d.n; });
+            .style("fill", function(d) { return color(d.name); })
+            .on("mouseover", function(d) {     
+            div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div.text(d.n)  
+                .style("left", (d3.event.pageX) + "px")     
+                .style("top", (d3.event.pageY - 28) + "px");
+            console.log(d.n);
+            })          
+            .on("mouseout", function(d) {
+                div.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+            });
+
+    
+
+        //  bars.append("text")
+        //     .attr("x", function(d) { return x(d.x0); })
+        //     .attr("y", y.bandwidth()/2)
+        //     .attr("dy", "0.5em")
+        //     .attr("dx", "0.5em")
+        //     .style("font" ,"7px sans-serif")
+        //     .style("text-anchor", "begin")
+        //     .text(function(d) { 
+        //         if (d.n== 0 || d.name=='Foreign Aid') 
+        //             return d.n = '';
+        //         else return d.n; });
             
         country.insert("rect",":first-child")
             .attr("height", y.bandwidth())
@@ -128,6 +167,16 @@
             .attr("fill-opacity", "0.5")
             .style("fill", "#F5F5F5")
             .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+        
+        country.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
     
         chart1.append("text")
             .attr("x", 0)
@@ -136,43 +185,147 @@
             .style("text-anchor", "begin")
             .text("PRIMARY");
         
-        d3.select("input").on("change", change);
-
-        var sortTimeout = setTimeout(function() {
-            d3.select("input").property("checked", true).each(change);
-            }, 2000);
-
-        function change() {
-            clearTimeout(sortTimeout);
-
-        // Copy-on-write since tweens are evaluated after a delay.
-        var y0 = y.domain(data.sort(this.checked
-            ? function(a, b) { return b.N - a.N; }
-            : function(a, b) { return d3.ascending(a.Country, b.Country); })
-            .map(function(d) { return d.Country; }))
-            .copy();
-    
-        chart1.selectAll(".bar")
-            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
-    
-        var transition = chart1.transition().duration(750),
-            delay = function(d, i) { return i * 50; };
-    
-        transition.selectAll(".bar")
-            .delay(delay)
-            .attr("y", function(d) { return y0(d.Country); });
-    
-        transition.select(".y.axis")
-            .call(yAxis)
-          .selectAll("g")
-            .delay(delay);
-        }
+        });
         
+        d3.select("#sortP").on("click", sortBars);
+      
+        function sortBars(event) {
+            d3.selectAll('#primary').remove()
+            d3.selectAll('.y1.axis').remove()
             
-        });  
+            d3.csv("Primary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']*100);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name],
+                    gini: d.gini
+            };
+                });
+            });
+            
+            console.log(data);
+            x.domain([0, 6]).nice();
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+            
+            chart1.append("g")
+                .attr("class", "y1 axis")
+                .call(yAxis);
+            
+            var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
+            
+            var country = chart1.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("id", "primary")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars = country.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); })
+                .on("mouseover", function(d) {     
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                div.text(d.n)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");
+                console.log(d.n);
+                })          
+                .on("mouseout", function(d) {
+                    div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+                });
+            
+            // bars.append("text")
+            //     .attr("x", function(d) { return x(d.x0); })
+            //     .attr("y", y.bandwidth()/2)
+            //     .attr("dy", "0.5em")
+            //     .attr("dx", "0.5em")
+            //     .style("font" ,"7px sans-serif")
+            //     .style("text-anchor", "begin")
+            //     .text(function(d) { 
+            //         if (d.n== 0 || d.name=='Foreign Aid') 
+            //             return d.n = '';
+            //         else return d.n; });
+            
+            country.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+        
+            country.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
+            
+        });
+        }
+        // d3.select("input").on("change", change1);
+
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change1);
+        // }, 2000);
+    
+        // function change1() {
+        //     clearTimeout(sortTimeout);
+
+        //     // Copy-on-write since tweens are evaluated after a delay.
+        //     var y0 = y.domain(data.sort(this.checked
+        //         ? function(a, b) { return b.N - a.N; }
+        //         : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //         .map(function(d) { return d.Country; }))
+        //         .copy();
+        
+        //     chart1.selectAll(".subbar")
+        //         .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+        
+        //     var transition = chart1.transition().duration(750),
+        //         delay = function(d, i) { return i * 50; };
+            
+        //     transition.selectAll(".subbar")
+        //         .delay(delay)
+        //         .attr("y", function(d) { return y0(d.Country); });
+        
+        //     transition.select(".y.axis")
+        //         .call(yAxis)
+        //       .selectAll("g")
+        //         .delay(delay);
+        // }
+           
             
         var chart2 = d3.select('#figure').append('svg')
-            .attr('width', width + margin.left + margin.right)
+            .attr('width', width + margin.left + margin.right*2)
             .attr('height', height + margin.top + margin.bottom)
             .attr('id', 'd3-plot2')
         .append("g")
@@ -192,7 +345,8 @@
                     x0: x0, 
                     x1: x0 += +d[name],
                     N: +d.N,
-                    n: +d[name]
+                    n: +d[name],
+                    gini: d.gini
             };
                 });
             });
@@ -204,17 +358,23 @@
             }));
             
         chart2.append("g")
-            .attr("class", "x axis")
+            .attr("class", "x2 axis")
             .call(xAxis);
 
         chart2.append("g")
-            .attr("class", "y axis")
+            .attr("class", "y2 axis")
             .call(yAxis);
+        
+        var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
             
         var country2 = chart2.selectAll(".Country")
             .data(data)
             .enter().append("g")
             .attr("class", "bar")
+            .attr("id", "secondary")
             .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
             
         var bars2 = country2.selectAll("rect")
@@ -225,19 +385,32 @@
             .attr("height", y.bandwidth())
             .attr("x", function(d) { return x(d.x0); })
             .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-            .style("fill", function(d) { return color(d.name); });
-        
-        bars2.append("text")
-            .attr("x", function(d) { return x(d.x0); })
-            .attr("y", y.bandwidth()/2)
-            .attr("dy", "0.5em")
-            .attr("dx", "0.5em")
-            .style("font" ,"7px sans-serif")
-            .style("text-anchor", "begin")
-            .text(function(d) { 
-                if (d.n== 0 || d.name=='Foreign Aid') 
-                    return d.n = '';
-                else return d.n; });
+            .style("fill", function(d) { return color(d.name); })
+            .on("mouseover", function(d) {     
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                div.text(d.n)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");
+                console.log(d.n);
+                })          
+                .on("mouseout", function(d) {
+                    div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+                });
+        // bars2.append("text")
+        //     .attr("x", function(d) { return x(d.x0); })
+        //     .attr("y", y.bandwidth()/2)
+        //     .attr("dy", "0.5em")
+        //     .attr("dx", "0.5em")
+        //     .style("font" ,"7px sans-serif")
+        //     .style("text-anchor", "begin")
+        //     .text(function(d) { 
+        //         if (d.n== 0 || d.name=='Foreign Aid') 
+        //             return d.n = '';
+        //         else return d.n; });
             
         country2.insert("rect",":first-child")
             .attr("height", y.bandwidth())
@@ -247,6 +420,16 @@
             .style("fill", "#F5F5F5")
             .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
     
+        country2.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
+            
         chart2.append("text")
             .attr("x", 0)
             .attr("y", -30)
@@ -254,46 +437,151 @@
             .style("text-anchor", "begin")
             .text("SECONDARY");
         
-        d3.select("input").on("change", change);
+        // d3.select("input").on("change", change2);
 
-        var sortTimeout = setTimeout(function() {
-            d3.select("input").property("checked", true).each(change);
-            }, 2000);
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change2);
+        //     }, 2000);
 
-        function change() {
-            clearTimeout(sortTimeout);
+        // function change2() {
+        //     clearTimeout(sortTimeout);
 
-        // Copy-on-write since tweens are evaluated after a delay.
-        var y0 = y.domain(data.sort(this.checked
-            ? function(a, b) { return b.N - a.N; }
-            : function(a, b) { return d3.ascending(a.Country, b.Country); })
-            .map(function(d) { return d.Country; }))
-            .copy();
+        // // Copy-on-write since tweens are evaluated after a delay.
+        // var y0 = y.domain(data.sort(this.checked
+        //     ? function(a, b) { return b.N - a.N; }
+        //     : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //     .map(function(d) { return d.Country; }))
+        //     .copy();
     
-        chart2.selectAll(".bar")
-            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+        // chart2.selectAll(".bar")
+        //     .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
     
-        var transition = chart2.transition().duration(750),
-            delay = function(d, i) { return i * 50; };
+        // var transition = chart2.transition().duration(750),
+        //     delay = function(d, i) { return i * 50; };
     
-        transition.selectAll(".bar")
-            .delay(delay)
-            .attr("y", function(d) { return y0(d.Country); });
+        // transition.selectAll(".bar")
+        //     .delay(delay)
+        //     .attr("y", function(d) { return y0(d.Country); });
     
-        transition.select(".y.axis")
-            .call(yAxis)
-          .selectAll("g")
-            .delay(delay);
-        }
+        // transition.select(".y.axis")
+        //     .call(yAxis)
+        //   .selectAll("g")
+        //     .delay(delay);
+        // }
     
         });
         
+        d3.select("#sortS").on("click", sortBars2);
+      
+        function sortBars2(event) {
+            d3.selectAll('#secondary').remove()
+            d3.selectAll('.y2.axis').remove()
+            
+            d3.csv("Secondary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name],
+                    gini: d.gini
+            };
+                });
+            });
+            
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+        
+    
+            chart2.append("g")
+                .attr("class", "y2 axis")
+                .call(yAxis);
+            
+            var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
+            
+            var country2 = chart2.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("id", "secondary")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars2 = country2.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars2.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); })
+                .on("mouseover", function(d) {     
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                div.text(d.n)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");
+                console.log(d.n);
+                })          
+                .on("mouseout", function(d) {
+                    div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+                });
+                
+            // bars2.append("text")
+            //     .attr("x", function(d) { return x(d.x0); })
+            //     .attr("y", y.bandwidth()/2)
+            //     .attr("dy", "0.5em")
+            //     .attr("dx", "0.5em")
+            //     .style("font" ,"7px sans-serif")
+            //     .style("text-anchor", "begin")
+            //     .text(function(d) { 
+            //         if (d.n== 0 || d.name=='Foreign Aid') 
+            //             return d.n = '';
+            //         else return d.n; });
+                
+            country2.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+            
+            country2.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
+            
+        });
+        
+        }
+        
         var chart3 = d3.select('#figure').append('svg')
-            .attr('width', width + margin.left + margin.right)
+            .attr('width', width + margin.left + margin.right*2)
             .attr('height', height + margin.top + margin.bottom)
-            .attr('id', 'd3-plot2')
+            .attr('id', 'd3-plot3')
         .append("g")
-            .attr("transform", "translate( "+ margin.left +"," + margin.top + ")")
+            .attr("transform", "translate( "+ margin.left +"," + margin.top + ")");
             
         d3.csv("Tertiary.csv", function(error, data) {
             
@@ -309,7 +597,8 @@
                     x0: x0, 
                     x1: x0 += +d[name],
                     N: +d.N,
-                    n: +d[name]
+                    n: +d[name],
+                    gini: d.gini
             };
                 });
             });
@@ -321,17 +610,23 @@
             }));
             
         chart3.append("g")
-            .attr("class", "x axis")
+            .attr("class", "x3 axis")
             .call(xAxis);
 
         chart3.append("g")
-            .attr("class", "y axis")
+            .attr("class", "y3 axis")
             .call(yAxis);
+         
+        var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
             
         var country3 = chart3.selectAll(".Country")
             .data(data)
             .enter().append("g")
             .attr("class", "bar")
+            .attr("id", "tertiary")
             .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
             
         var bars3 = country3.selectAll("rect")
@@ -342,19 +637,32 @@
             .attr("height", y.bandwidth())
             .attr("x", function(d) { return x(d.x0); })
             .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-            .style("fill", function(d) { return color(d.name); });
-        
-        bars3.append("text")
-            .attr("x", function(d) { return x(d.x0); })
-            .attr("y", y.bandwidth()/2)
-            .attr("dy", "0.5em")
-            .attr("dx", "0.5em")
-            .style("font" ,"7px sans-serif")
-            .style("text-anchor", "begin")
-            .text(function(d) { 
-                if (d.n== 0 || d.name=='Foreign Aid') 
-                    return d.n = '';
-                else return d.n; });
+            .style("fill", function(d) { return color(d.name); })
+            .on("mouseover", function(d) {     
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                div.text(d.n)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");
+                console.log(d.n);
+                })          
+                .on("mouseout", function(d) {
+                    div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+                });
+        // bars3.append("text")
+        //     .attr("x", function(d) { return x(d.x0); })
+        //     .attr("y", y.bandwidth()/2)
+        //     .attr("dy", "0.5em")
+        //     .attr("dx", "0.5em")
+        //     .style("font" ,"7px sans-serif")
+        //     .style("text-anchor", "begin")
+        //     .text(function(d) { 
+        //         if (d.n== 0 || d.name=='Foreign Aid') 
+        //             return d.n = '';
+        //         else return d.n; });
             
         country3.insert("rect",":first-child")
             .attr("height", y.bandwidth())
@@ -363,7 +671,17 @@
             .attr("fill-opacity", "0.5")
             .style("fill", "#F5F5F5")
             .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
-    
+        
+        country3.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
+            
         chart3.append("text")
             .attr("x", 0)
             .attr("y", -30)
@@ -371,53 +689,181 @@
             .style("text-anchor", "begin")
             .text("TERTIARY");
             
-        d3.select("input").on("change", change);
+        // d3.select("input").on("change", change3);
 
-        var sortTimeout = setTimeout(function() {
-            d3.select("input").property("checked", true).each(change);
-            }, 2000);
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change3);
+        //     }, 2000);
 
-        function change() {
-            clearTimeout(sortTimeout);
+        // function change3() {
+        //     clearTimeout(sortTimeout);
 
-        // Copy-on-write since tweens are evaluated after a delay.
-        var y0 = y.domain(data.sort(this.checked
-            ? function(a, b) { return b.N - a.N; }
-            : function(a, b) { return d3.ascending(a.Country, b.Country); })
-            .map(function(d) { return d.Country; }))
-            .copy();
+        // // Copy-on-write since tweens are evaluated after a delay.
+        // var y0 = y.domain(data.sort(this.checked
+        //     ? function(a, b) { return b.N - a.N; }
+        //     : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //     .map(function(d) { return d.Country; }))
+        //     .copy();
     
-        chart3.selectAll(".bar")
-            .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+        // chart3.selectAll(".bars")
+        //     .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
     
-        var transition = chart3.transition().duration(750),
-            delay = function(d, i) { return i * 50; };
+        // var transition = chart3.transition().duration(750),
+        //     delay = function(d, i) { return i * 50; };
     
-        transition.selectAll(".bar")
-            .delay(delay)
-            .attr("y", function(d) { return y0(d.Country); });
+        // transition.selectAll(".bars")
+        //     .delay(delay)
+        //     .attr("y", function(d) { return y0(d.Country); });
     
-        transition.select(".y.axis")
-            .call(yAxis)
-          .selectAll("g")
-            .delay(delay);
-        }
+        // transition.select(".y.axis")
+        //     .call(yAxis)
+        //   .selectAll("g")
+        //     .delay(delay);
+        // }
     
         });
-          
+        
+        d3.select("#sortT").on("click", sortBars3);
+      
+        function sortBars3(event) {
+            d3.selectAll('#tertiary').remove()
+            d3.selectAll('.y3.axis').remove()
+            
+            d3.csv("Tertiary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name],
+                    gini: d.gini
+            };
+                });
+            });
+            
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+        
+    
+            chart3.append("g")
+                .attr("class", "y3 axis")
+                .call(yAxis);
+            
+            var div = d3.selectAll("body").append("div")
+            .attr('width', 50)
+            .attr('height', 50)
+            .attr("class", "tooltip")
+            
+            var country3 = chart3.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars3 = country3.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars3.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); })
+                .on("mouseover", function(d) {     
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);		
+                div.text(d.n)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");
+                console.log(d.n);
+                })          
+                .on("mouseout", function(d) {
+                    div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+                });
+            
+            // bars3.append("text")
+            //     .attr("x", function(d) { return x(d.x0); })
+            //     .attr("y", y.bandwidth()/2)
+            //     .attr("dy", "0.5em")
+            //     .attr("dx", "0.5em")
+            //     .style("font" ,"7px sans-serif")
+            //     .style("text-anchor", "begin")
+            //     .text(function(d) { 
+            //         if (d.n== 0 || d.name=='Foreign Aid') 
+            //             return d.n = '';
+            //         else return d.n; });
+                
+            country3.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+            
+            country3.append("text")
+            .attr("x", width +10)
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("fill", "#29ABA4")
+            .style("text-anchor", "end")
+            .text(function(d) {return d.gini;});
+            
+        });
+        
+        }
+        
         var legendbox = d3.select('#legend').append('svg')
             .attr('width', 2000)
             .attr('height', 20)
             .attr('id', 'legendbox')  
         
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 17)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("aims to examine the impact of such investment on inequality.");
+            
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("reduce income inequality. This breakdown of public, private and aid expenditure on education ");
+            
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 3)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Education, is a form of human capital investment that is central to economic growth and");
+        
         legendbox.append("rect")
-            .attr("x", 515)
+            .attr("x", 370)
             .attr("width", 15)
             .attr("height", 15)
             .style("fill", '#EB7260');
             
         legendbox.append("text")
-            .attr("x", 535)
+            .attr("x", 390)
             .attr("y", 8)
             .attr("dy", ".35em")
             .style("text-anchor", "begin")
@@ -425,13 +871,13 @@
             .text("Government Expenditure");
             
         legendbox.append("rect")
-            .attr("x", 660)
+            .attr("x", 515)
             .attr("width", 15)
             .attr("height", 15)
             .style("fill", '#3A9AD9');
         
         legendbox.append("text")
-            .attr("x", 680)
+            .attr("x", 535)
             .attr("y", 8)
             .attr("dy", ".35em")
             .style("text-anchor", "begin")
@@ -439,10 +885,24 @@
             .text("Household Expenditure");
             
         legendbox.append("rect")
-            .attr("x", 785)
+            .attr("x", 660)
             .attr("width", 15)
             .attr("height", 15)
             .style("fill", '#354458');
+        
+        legendbox.append("text")
+            .attr("x", 680)
+            .attr("y", 8)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Foreign Aid");
+        
+        legendbox.append("rect")
+            .attr("x", 785)
+            .attr("width", 15)
+            .attr("height", 15)
+            .style("fill", '#29ABA4');
         
         legendbox.append("text")
             .attr("x", 805)
@@ -450,17 +910,26 @@
             .attr("dy", ".35em")
             .style("text-anchor", "begin")
             .style("font" ,"7px sans-serif")
-            .text("Foreign Aid");
-            
-        legendbox.append("text")
-            .attr("x", 1050)
+            .text("Gini Coefficient (%)");
+          
+        // legendbox.append("text")
+        //     .attr("x", 1050)
+        //     .attr("y", 8)
+        //     .attr("dy", ".35em")
+        //     .style("text-anchor", "end")
+        //     .style("font" ,"7px sans-serif")
+        //     .style("font-style", "italic")
+        //     .text("Expenditure data are 1995-2014 average as % of GDP");
+        
+         var datasource = d3.select('#source')
+        .append('text')
+            .attr("x", 10)
             .attr("y", 8)
             .attr("dy", ".35em")
-            .style("text-anchor", "end")
+            .style("text-anchor", "begin")
             .style("font" ,"7px sans-serif")
             .style("font-style", "italic")
-            .text("All data points are 1995-2014 average as % of GDP");
-            
+            .text("DATA SOURCE: 1. Government expenditure % of GDP, by education level: UNESCO Education Finance  2. Share of household expenditure education, by education level (re-calculated as % of GDP): UNESCO IIEP Pôle de Dakar  3.Official development assitance, by education level (re-calculated as % of GDP): OECD Creditor Reporting System")
         </script>
 
     </body>
