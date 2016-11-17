@@ -43,7 +43,7 @@
         <button id="sortS" onclick="sortBars2()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Secondary</button>
         <button id="sortT" onclick="sortBars3()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Tertiary</button>
         <h1 style="font-family:Sans-Serif;font-size:17px;margin-left:20px">Education Financing and Inequality in Selected Sub-Sahran African Countries</h1>
-        <div id='legend' style= 'height: 20px; width: 2000px'></div>
+        <div id='legend' style= 'height: 25px; width: 2000px'></div>
         <div id='figure' style='height: 805px; width: 2000px; overflow-x: scroll; margin-bottom: 30px;'></div>
         <div id='source' style='height: 50px; width: 2000px;'></div>
      
@@ -831,6 +831,30 @@
             .attr('width', 2000)
             .attr('height', 20)
             .attr('id', 'legendbox')  
+        
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 17)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("aims to examine the impact of such investment on inequality.");
+            
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("reduce income inequality. This breakdown of public, private and aid expenditure on education ");
+            
+        legendbox.append("text")
+            .attr("x", 20)
+            .attr("y", 3)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Education, is a form of human capital investment that is central to economic growth and");
         
         legendbox.append("rect")
             .attr("x", 370)
