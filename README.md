@@ -2,6 +2,9 @@
 
 [![](http://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation/preview.png)](http://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation)
 
+* [next step](http://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation/Ideation.pdf)
+* [second project](http://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation/preview2.png)
+
 # major-studio-1
 
 ## Data Review
