@@ -1,6 +1,6 @@
  >  I am studying the correlation between education spending by education level and economic inequality in Africa in order to understand how human capital investment in different levels of schooling can help alleviate inequality. I am using education spending as % of GDP by education level and the Gini coefficient as my variables. My [visualization](nancyzhao888.github.io/major-studio-1/master/exercises/undp) is based on UNESCO Education Finance and IID-SSA data."
 
-[![](https://nancyzhao888.github.io/major-studio-1/exercises/undp.1/preview.png)](https://nancyzhao888.github.io/major-studio-1/exercises/undp.1/)
+[![](https://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation/preview.png)](https://nancyzhao888.github.io/major-studio-1/exercises/undp.presentation/)
 
 # major-studio-1
 
