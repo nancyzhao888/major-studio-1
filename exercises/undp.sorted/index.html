@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Education Financing Bar Chart.js</title>
+        <style>
+
+        body {
+          font: 10px sans-serif;
+        }
+        
+        .axis text {
+          font: 7px sans-serif;
+        }
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        </style>
+
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        
+    </head>
+    
+    <body style="background-color: #E9E0D6">
+        <button id="sortP" onclick="sortBars1()" style="font-family:sans-serif; font-size:10px; margin-left: 20px">Sort Primary</button>
+        <button id="sortS" onclick="sortBars2()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Secondary</button>
+        <button id="sortT" onclick="sortBars3()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Tertiary</button>
+        <h1 style="font-family:Sans-Serif;font-size:17px;margin-left:20px">Education Financing and Inequality in Selected Sub-Sahran African Countries</h1>
+        <div id='legend' style= 'height: 20px; width: 2000px'></div>
+        <div id='figure' style='height: 1000px; width: 2000px; overflow-x: scroll; margin-bottom: 50px;'></div>
+     
+        <script>
+
+        var margin = {top: 50, right: 20, bottom: 10, left: 65},
+            width = 350 - margin.left - margin.right,
+            height = 800 - margin.top - margin.bottom;
+
+        var y = d3.scaleBand()
+            .range([0, height])
+            .padding(0.5);
+            
+        var x = d3.scaleLinear()
+            .range([0, 275]);
+        
+        var color = d3.scaleOrdinal()
+            .range(['#EB7260', '#3A9AD9','#354458']);
+
+        var xAxis = d3.axisTop(x);
+
+        var yAxis = d3.axisLeft(y);
+
+        var chart1 = d3.select('#figure').append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('id', 'd3-plot')
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        
+        color.domain(['Government', 'Household', 'Foreign Aid']);
+        
+        d3.csv("Primary.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid'])*200;
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            console.log(data);
+            x.domain([0, 6]).nice();
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+        
+        chart1.append("g")
+            .attr("class", "x1 axis")
+            .call(xAxis);
+
+        chart1.append("g")
+            .attr("class", "y1 axis")
+            .call(yAxis);
+        
+        var country = chart1.selectAll(".country")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "bar")
+            .attr("id", "primary")
+            .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+            
+        var bars = country.selectAll("rect")
+            .data(function(d) { return d.boxes; })
+            .enter().append("g").attr("class", "subbar");
+        
+        bars.append("rect")
+            .attr("height", y.bandwidth())
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+            .style("fill", function(d) { return color(d.name); });
+        
+        bars.append("text")
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("text-anchor", "begin")
+            .text(function(d) { 
+                if (d.n== 0 || d.name=='Foreign Aid') 
+                    return d.n = '';
+                else return d.n; });
+            
+        country.insert("rect",":first-child")
+            .attr("height", y.bandwidth())
+            .attr("x", "1")
+            .attr("width", width + 10)
+            .attr("fill-opacity", "0.5")
+            .style("fill", "#F5F5F5")
+            .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+    
+        chart1.append("text")
+            .attr("x", 0)
+            .attr("y", -30)
+            .style("font" ,"13px sans-serif")
+            .style("text-anchor", "begin")
+            .text("PRIMARY");
+        
+        });
+        
+        d3.select("#sortP").on("click", sortBars);
+      
+        function sortBars(event) {
+            d3.selectAll('#primary').remove()
+            d3.selectAll('.y1.axis').remove()
+            
+            d3.csv("Primary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid'])*200;
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            console.log(data);
+            x.domain([0, 6]).nice();
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+            
+            chart1.append("g")
+                .attr("class", "y1 axis")
+                .call(yAxis);
+            
+            var country = chart1.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("id", "primary")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars = country.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); });
+            
+            bars.append("text")
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("y", y.bandwidth()/2)
+                .attr("dy", "0.5em")
+                .attr("dx", "0.5em")
+                .style("font" ,"7px sans-serif")
+                .style("text-anchor", "begin")
+                .text(function(d) { 
+                    if (d.n== 0 || d.name=='Foreign Aid') 
+                        return d.n = '';
+                    else return d.n; });
+                
+            country.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+        
+        });
+        }
+        // d3.select("input").on("change", change1);
+
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change1);
+        // }, 2000);
+    
+        // function change1() {
+        //     clearTimeout(sortTimeout);
+
+        //     // Copy-on-write since tweens are evaluated after a delay.
+        //     var y0 = y.domain(data.sort(this.checked
+        //         ? function(a, b) { return b.N - a.N; }
+        //         : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //         .map(function(d) { return d.Country; }))
+        //         .copy();
+        
+        //     chart1.selectAll(".subbar")
+        //         .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+        
+        //     var transition = chart1.transition().duration(750),
+        //         delay = function(d, i) { return i * 50; };
+            
+        //     transition.selectAll(".subbar")
+        //         .delay(delay)
+        //         .attr("y", function(d) { return y0(d.Country); });
+        
+        //     transition.select(".y.axis")
+        //         .call(yAxis)
+        //       .selectAll("g")
+        //         .delay(delay);
+        // }
+           
+            
+        var chart2 = d3.select('#figure').append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('id', 'd3-plot2')
+        .append("g")
+            .attr("transform", "translate( "+ margin.left +"," + margin.top + ")")
+            
+        d3.csv("Secondary.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            console.log(data);
+            x.domain([0, 6]).nice();
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+            
+        chart2.append("g")
+            .attr("class", "x2 axis")
+            .call(xAxis);
+
+        chart2.append("g")
+            .attr("class", "y2 axis")
+            .call(yAxis);
+            
+        var country2 = chart2.selectAll(".Country")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "bar")
+            .attr("id", "secondary")
+            .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+            
+        var bars2 = country2.selectAll("rect")
+            .data(function(d) { return d.boxes; })
+            .enter().append("g").attr("class", "subbar");
+        
+        bars2.append("rect")
+            .attr("height", y.bandwidth())
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+            .style("fill", function(d) { return color(d.name); });
+        
+        bars2.append("text")
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("text-anchor", "begin")
+            .text(function(d) { 
+                if (d.n== 0 || d.name=='Foreign Aid') 
+                    return d.n = '';
+                else return d.n; });
+            
+        country2.insert("rect",":first-child")
+            .attr("height", y.bandwidth())
+            .attr("x", "1")
+            .attr("width", width + 10)
+            .attr("fill-opacity", "0.5")
+            .style("fill", "#F5F5F5")
+            .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+    
+        chart2.append("text")
+            .attr("x", 0)
+            .attr("y", -30)
+            .style("font" ,"13px sans-serif")
+            .style("text-anchor", "begin")
+            .text("SECONDARY");
+        
+        // d3.select("input").on("change", change2);
+
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change2);
+        //     }, 2000);
+
+        // function change2() {
+        //     clearTimeout(sortTimeout);
+
+        // // Copy-on-write since tweens are evaluated after a delay.
+        // var y0 = y.domain(data.sort(this.checked
+        //     ? function(a, b) { return b.N - a.N; }
+        //     : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //     .map(function(d) { return d.Country; }))
+        //     .copy();
+    
+        // chart2.selectAll(".bar")
+        //     .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+    
+        // var transition = chart2.transition().duration(750),
+        //     delay = function(d, i) { return i * 50; };
+    
+        // transition.selectAll(".bar")
+        //     .delay(delay)
+        //     .attr("y", function(d) { return y0(d.Country); });
+    
+        // transition.select(".y.axis")
+        //     .call(yAxis)
+        //   .selectAll("g")
+        //     .delay(delay);
+        // }
+    
+        });
+        
+        d3.select("#sortS").on("click", sortBars2);
+      
+        function sortBars2(event) {
+            d3.selectAll('#secondary').remove()
+            d3.selectAll('.y2.axis').remove()
+            
+            d3.csv("Secondary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+        
+    
+            chart2.append("g")
+                .attr("class", "y2 axis")
+                .call(yAxis);
+                
+            var country2 = chart2.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("id", "secondary")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars2 = country2.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars2.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); });
+            
+            bars2.append("text")
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("y", y.bandwidth()/2)
+                .attr("dy", "0.5em")
+                .attr("dx", "0.5em")
+                .style("font" ,"7px sans-serif")
+                .style("text-anchor", "begin")
+                .text(function(d) { 
+                    if (d.n== 0 || d.name=='Foreign Aid') 
+                        return d.n = '';
+                    else return d.n; });
+                
+            country2.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+            
+        });
+        
+        }
+        
+        var chart3 = d3.select('#figure').append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('id', 'd3-plot3')
+        .append("g")
+            .attr("transform", "translate( "+ margin.left +"," + margin.top + ")");
+            
+        d3.csv("Tertiary.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            console.log(data);
+            x.domain([0, 6]).nice();
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+            
+        chart3.append("g")
+            .attr("class", "x3 axis")
+            .call(xAxis);
+
+        chart3.append("g")
+            .attr("class", "y3 axis")
+            .call(yAxis);
+            
+        var country3 = chart3.selectAll(".Country")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "bar")
+            .attr("id", "tertiary")
+            .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+            
+        var bars3 = country3.selectAll("rect")
+            .data(function(d) { return d.boxes; })
+            .enter().append("g").attr("class", "subbar");
+        
+        bars3.append("rect")
+            .attr("height", y.bandwidth())
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+            .style("fill", function(d) { return color(d.name); });
+        
+        bars3.append("text")
+            .attr("x", function(d) { return x(d.x0); })
+            .attr("y", y.bandwidth()/2)
+            .attr("dy", "0.5em")
+            .attr("dx", "0.5em")
+            .style("font" ,"7px sans-serif")
+            .style("text-anchor", "begin")
+            .text(function(d) { 
+                if (d.n== 0 || d.name=='Foreign Aid') 
+                    return d.n = '';
+                else return d.n; });
+            
+        country3.insert("rect",":first-child")
+            .attr("height", y.bandwidth())
+            .attr("x", "1")
+            .attr("width", width + 10)
+            .attr("fill-opacity", "0.5")
+            .style("fill", "#F5F5F5")
+            .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+    
+        chart3.append("text")
+            .attr("x", 0)
+            .attr("y", -30)
+            .style("font" ,"13px sans-serif")
+            .style("text-anchor", "begin")
+            .text("TERTIARY");
+            
+        // d3.select("input").on("change", change3);
+
+        // var sortTimeout = setTimeout(function() {
+        //     d3.select("input").property("checked", true).each(change3);
+        //     }, 2000);
+
+        // function change3() {
+        //     clearTimeout(sortTimeout);
+
+        // // Copy-on-write since tweens are evaluated after a delay.
+        // var y0 = y.domain(data.sort(this.checked
+        //     ? function(a, b) { return b.N - a.N; }
+        //     : function(a, b) { return d3.ascending(a.Country, b.Country); })
+        //     .map(function(d) { return d.Country; }))
+        //     .copy();
+    
+        // chart3.selectAll(".bars")
+        //     .sort(function(a, b) { return y0(a.Country) - y0(b.Country); });
+    
+        // var transition = chart3.transition().duration(750),
+        //     delay = function(d, i) { return i * 50; };
+    
+        // transition.selectAll(".bars")
+        //     .delay(delay)
+        //     .attr("y", function(d) { return y0(d.Country); });
+    
+        // transition.select(".y.axis")
+        //     .call(yAxis)
+        //   .selectAll("g")
+        //     .delay(delay);
+        // }
+    
+        });
+        
+        d3.select("#sortT").on("click", sortBars3);
+      
+        function sortBars3(event) {
+            d3.selectAll('#tertiary').remove()
+            d3.selectAll('.y3.axis').remove()
+            
+            d3.csv("Tertiary_sorted.csv", function(error, data) {
+            
+            data.forEach(function(d) {
+            
+            d['Government'] = parseFloat(d['Government']);
+            d['Household'] = parseFloat(d['Household']);
+            d['Foreign Aid'] = parseFloat(d['Foreign Aid']);
+            
+            var x0 = 0;
+            d.boxes = color.domain().map(function(name) { 
+            return {name: name, 
+                    x0: x0, 
+                    x1: x0 += +d[name],
+                    N: +d.N,
+                    n: +d[name]
+            };
+                });
+            });
+            
+            y.domain(data.map(function(d) { 
+                return d.Country; 
+            }));
+        
+    
+            chart3.append("g")
+                .attr("class", "y3 axis")
+                .call(yAxis);
+                
+            var country3 = chart3.selectAll(".country")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "bar")
+                .attr("transform", function(d) { return "translate(0," + y(d.Country) + ")"; });
+                
+            var bars3 = country3.selectAll("rect")
+                .data(function(d) { return d.boxes; })
+                .enter().append("g").attr("class", "subbar");
+            
+            bars3.append("rect")
+                .attr("height", y.bandwidth())
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+                .style("fill", function(d) { return color(d.name); });
+            
+            bars3.append("text")
+                .attr("x", function(d) { return x(d.x0); })
+                .attr("y", y.bandwidth()/2)
+                .attr("dy", "0.5em")
+                .attr("dx", "0.5em")
+                .style("font" ,"7px sans-serif")
+                .style("text-anchor", "begin")
+                .text(function(d) { 
+                    if (d.n== 0 || d.name=='Foreign Aid') 
+                        return d.n = '';
+                    else return d.n; });
+                
+            country3.insert("rect",":first-child")
+                .attr("height", y.bandwidth())
+                .attr("x", "1")
+                .attr("width", width + 10)
+                .attr("fill-opacity", "0.5")
+                .style("fill", "#F5F5F5")
+                .attr("class", function(d,index) { return index%2==0 ? "even" : "uneven"; });
+            
+        });
+        
+        }
+        
+        var legendbox = d3.select('#legend').append('svg')
+            .attr('width', 2000)
+            .attr('height', 20)
+            .attr('id', 'legendbox')  
+        
+        legendbox.append("rect")
+            .attr("x", 515)
+            .attr("width", 15)
+            .attr("height", 15)
+            .style("fill", '#EB7260');
+            
+        legendbox.append("text")
+            .attr("x", 535)
+            .attr("y", 8)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Government Expenditure");
+            
+        legendbox.append("rect")
+            .attr("x", 660)
+            .attr("width", 15)
+            .attr("height", 15)
+            .style("fill", '#3A9AD9');
+        
+        legendbox.append("text")
+            .attr("x", 680)
+            .attr("y", 8)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Household Expenditure");
+            
+        legendbox.append("rect")
+            .attr("x", 785)
+            .attr("width", 15)
+            .attr("height", 15)
+            .style("fill", '#354458');
+        
+        legendbox.append("text")
+            .attr("x", 805)
+            .attr("y", 8)
+            .attr("dy", ".35em")
+            .style("text-anchor", "begin")
+            .style("font" ,"7px sans-serif")
+            .text("Foreign Aid");
+            
+        legendbox.append("text")
+            .attr("x", 1050)
+            .attr("y", 8)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .style("font" ,"7px sans-serif")
+            .style("font-style", "italic")
+            .text("All data points are 1995-2014 average as % of GDP");
+            
+        </script>
+
+    </body>
+</html>
