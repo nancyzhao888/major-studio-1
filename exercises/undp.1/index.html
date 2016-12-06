@@ -175,9 +175,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
     
         chart1.append("text")
             .attr("x", 0)
@@ -286,9 +292,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
             
         });
         }
@@ -427,9 +439,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
             
         chart2.append("text")
             .attr("x", 0)
@@ -569,9 +587,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
             
         });
         
@@ -679,9 +703,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
             
         chart3.append("text")
             .attr("x", 0)
@@ -820,9 +850,15 @@
             .attr("dy", "0.5em")
             .attr("dx", "0.5em")
             .style("font" ,"7px sans-serif")
-            .style("fill", "#29ABA4")
+            .style("fill", function(d) {
+                if (d.gini>0) return "#29ABA4";
+                else return "E5243B";
+            })
             .style("text-anchor", "end")
-            .text(function(d) {return d.gini;});
+            .text(function(d) {
+                if (d.gini < 0)
+                return d.gini*(-1);
+                else return d.gini;});
             
         });
         
@@ -901,9 +937,15 @@
         
         legendbox.append("rect")
             .attr("x", 785)
-            .attr("width", 15)
+            .attr("width", 7.5)
             .attr("height", 15)
             .style("fill", '#29ABA4');
+        
+        legendbox.append("rect")
+            .attr("x", 792.5)
+            .attr("width", 7.5)
+            .attr("height", 15)
+            .style("fill", '#E5243B');
         
         legendbox.append("text")
             .attr("x", 805)
