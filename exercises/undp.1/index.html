@@ -38,7 +38,7 @@
         
     </head>
     
-    <body style="background-color: #E9E0D6">
+    <body style="background-color: #F3E6CF"> <!--#E9E0D6-->
         <button id="sortP" onclick="sortBars1()" style="font-family:sans-serif; font-size:10px; margin-left: 20px">Sort Primary</button>
         <button id="sortS" onclick="sortBars2()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Secondary</button>
         <button id="sortT" onclick="sortBars3()" style="font-family:sans-serif; font-size:10px; margin-left: 5px">Sort Tertiary</button>
@@ -61,7 +61,8 @@
             .range([0, 275]);
         
         var color = d3.scaleOrdinal()
-            .range(['#EB7260', '#3A9AD9','#354458']);
+            .range(['#FF715f', '#0A97D9','#19486A']); 
+        //'#EB7260', '#3A9AD9','#354458'
 
         var xAxis = d3.axisTop(x);
 
