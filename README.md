@@ -1,8 +1,10 @@
- > ### Education Financing and Inequality in Selected Sub-Saharan African Countries
+### Education Financing and Inequality in Sub-Saharan African Countries
  
- > **Description**: Education, is a form of human capital investment that is central to economic growth and reduce income inequality. This interactive breakdown of public, private and aid expenditure on education aims to examine the impact of such investment on inequality.
+#### Description 
+Education is a form of human capital investment that is central to economic growth and reduce income inequality. This interactive breakdown of public, private and aid expenditures on education aims to examine the impact of such investment on inequality.
  
- > **Research Question**: I am studying the relationship between education spending by education level and economic inequality in Africa in order to understand how human capital investment in different levels of schooling can help alleviate inequality. I am using government / household / foreign aid education expenditure as % of GDP by education level and the Gini coefficient as my variables. My [visualization](nancyzhao888.github.io/major-studio-1/master/exercises/undp.presentation) is based on UNESCO Education Finance, UNESCO IIEP Pôle de Dakar, OECD Creditor Reporting System and IID-SSA data."
+#### Research Question 
+> I am studying the relationship between education spending by education level and economic inequality in Africa in order to understand how human capital investment in different levels of schooling can help alleviate inequality. I am using government / household / foreign aid education expenditure as % of GDP by education level and the Gini coefficient as my variables. My [visualization](nancyzhao888.github.io/major-studio-1/master/exercises/undp.presentation) is based on UNESCO Education Finance, UNESCO IIEP Pôle de Dakar, OECD Creditor Reporting System and IID-SSA data."
 
 [![](http://nancyzhao888.github.io/major-studio-1/exercises/undp.1/preview.png)](http://nancyzhao888.github.io/major-studio-1/exercises/undp.1)
 
