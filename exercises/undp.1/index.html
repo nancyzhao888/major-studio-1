@@ -301,6 +301,8 @@
                 d3.select("#textG").remove();
                 d3.select("#textH").remove();
                 d3.select("#textI").remove();
+                d3.select("#graphTitle1").remove();
+                d3.select("#graphTitle2").remove();
                 
                 var ttwidth = newWidth*4-200;
                 var graphWidth = ttwidth/2;
@@ -428,7 +430,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Expenditure Per Student (change over time %)")
-                    .attr("text-anchor", "middle");   
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle1");   
                 
                 d3.select("#graph1")
                     .append("text")
@@ -445,7 +448,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Inequality - Gini Coefficient (change over time %)")
-                    .attr("text-anchor", "middle"); 
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle2"); 
                     
                 d3.select("#graph2")
                     .append("text")
@@ -964,6 +968,8 @@
                 d3.select("#textG").remove();
                 d3.select("#textH").remove();
                 d3.select("#textI").remove();
+                d3.select("#graphTitle1").remove();
+                d3.select("#graphTitle2").remove();
                 
                 var ttwidth = newWidth*4-200;
                 var graphWidth = ttwidth/2;
@@ -1091,7 +1097,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Expenditure Per Student (change over time %)")
-                    .attr("text-anchor", "middle");   
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle1");   
                 
                 d3.select("#graph1")
                     .append("text")
@@ -1108,7 +1115,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Inequality - Gini Coefficient (change over time %)")
-                    .attr("text-anchor", "middle"); 
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle2"); 
                     
                 d3.select("#graph2")
                     .append("text")
@@ -1627,6 +1635,8 @@
                 d3.select("#textG").remove();
                 d3.select("#textH").remove();
                 d3.select("#textI").remove();
+                d3.select("#graphTitle1").remove();
+                d3.select("#graphTitle2").remove();
                 
                 var ttwidth = newWidth*4-200;
                 var graphWidth = ttwidth/2;
@@ -1754,7 +1764,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Expenditure Per Student (change over time %)")
-                    .attr("text-anchor", "middle");   
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle1");   
                 
                 d3.select("#graph1")
                     .append("text")
@@ -1771,7 +1782,8 @@
                     .attr("x", graphWidth/5*3)
                     .attr("y", graphWidth/15)
                     .text("Inequality - Gini Coefficient (change over time %)")
-                    .attr("text-anchor", "middle"); 
+                    .attr("text-anchor", "middle")
+                    .attr("id","graphTitle2"); 
                     
                 d3.select("#graph2")
                     .append("text")
