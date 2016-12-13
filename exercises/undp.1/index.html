@@ -218,7 +218,9 @@
             .on("mouseover", function(d) {     
             div.transition()		
                 .duration(200)		
-                .style("opacity", .97);		
+                .style("opacity", .97)
+                .style("left", (d3.event.pageX) + "px")     
+                .style("top", (d3.event.pageY-20) + "px");		
             div.text(d.n)  
                 .style("left", (d3.event.pageX) + "px")     
                 .style("top", (d3.event.pageY-15) + "px");
@@ -314,8 +316,8 @@
                     .text(d.Country);
                 
                 
-                var mapygraph1 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]);
-                var mapygraph2 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]); 
+                var mapygraph1 = d3.scaleLinear().domain([0, 4000]).range([9*(graphWidth/10), graphWidth/10]);
+                var mapygraph2 = d3.scaleLinear().domain([0, 1]).range([9*(graphWidth/10), graphWidth/10]); 
             
                 
                 for(var i = 1; i<=4; i++)
@@ -365,7 +367,7 @@
                             .attr("y1", graphWidth/10*5)
                             .attr("x2", graphWidth)
                             .attr("y2", graphWidth/10*5)
-                            .attr('stroke', '#212121')
+                            .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1); 
                             
                         d3.select(id)
@@ -422,6 +424,22 @@
                             .attr("y2", graphWidth/10*9)
                             .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1);
+                            
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth/5)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 95-00")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
+                        
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth-20)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 05-10")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
                         }
         
                         
@@ -434,14 +452,7 @@
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle1");   
                 
-                d3.select("#graph1")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");   
+                
                     
                 d3.select("#graph2")
                     .append("text")
@@ -452,14 +463,7 @@
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle2"); 
                     
-                d3.select("#graph2")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");
+                
                     
                 popupGraph(d);
                 
@@ -504,7 +508,7 @@
                         var text1a = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gov9500'] + "%")
+                            .text(d['gov9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['gov9500']) - 7)
                             .attr('id','textA')
@@ -539,7 +543,7 @@
                     var text1b = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0005'] + "%")
+                        .text(d['gov0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['gov0005']) - 7)
                         .attr('id','textB')
@@ -560,7 +564,7 @@
                     var text1c = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0510'] + "%")
+                        .text(d['gov0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph1(d['gov0510']) - 7)
                         .attr('id','textC')
@@ -584,7 +588,7 @@
                         var text1j = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['priv0510'] + "%")
+                            .text(d['priv0510'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['priv0510']) - 7)
                             .attr('id','textJ')
@@ -621,7 +625,7 @@
                         var text1g = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['aid9500'] + "%")
+                            .text(d['aid9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['aid9500']) - 7)
                             .attr('id','textG')
@@ -656,7 +660,7 @@
                     var text1h = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['aid0005'] + "%")
+                        .text(d['aid0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['aid0005']) - 7)
                         .attr('id','textH')
@@ -714,7 +718,7 @@
                         var text1d = d3.select("#graph2")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gini9500'] + "%")
+                            .text(d['gini9500'])
                             .attr('x', graphWidth/5 - 10)
                             .attr('y', mapygraph2(d['gini9500']) - 15)
                             .attr('id','textD')
@@ -749,7 +753,7 @@
                     var text1e = d3.select("#graph2")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gini0005'] + "%")
+                        .text(d['gini0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph2(d['gini0005']) - 15)
                         .attr('id','textE')
@@ -981,8 +985,8 @@
                     .text(d.Country);
                 
                 
-                var mapygraph1 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]);
-                var mapygraph2 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]); 
+                var mapygraph1 = d3.scaleLinear().domain([0,4000]).range([9*(graphWidth/10), graphWidth/10]);
+                var mapygraph2 = d3.scaleLinear().domain([0,1]).range([9*(graphWidth/10), graphWidth/10]); 
             
                 
                 for(var i = 1; i<=4; i++)
@@ -1032,7 +1036,7 @@
                             .attr("y1", graphWidth/10*5)
                             .attr("x2", graphWidth)
                             .attr("y2", graphWidth/10*5)
-                            .attr('stroke', '#212121')
+                            .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1); 
                             
                         d3.select(id)
@@ -1089,6 +1093,22 @@
                             .attr("y2", graphWidth/10*9)
                             .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1);
+                            
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth/5)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 95-00")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
+                        
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth-20)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 05-10")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
                         }
         
                         
@@ -1100,15 +1120,7 @@
                     .text("Expenditure Per Student (change over time %)")
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle1");   
-                
-                d3.select("#graph1")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");   
+    
                     
                 d3.select("#graph2")
                     .append("text")
@@ -1118,15 +1130,7 @@
                     .text("Inequality - Gini Coefficient (change over time %)")
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle2"); 
-                    
-                d3.select("#graph2")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");
+     
                     
                 popupGraph(d);
                 
@@ -1171,7 +1175,7 @@
                         var text1a = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gov9500'] + "%")
+                            .text(d['gov9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['gov9500']) - 7)
                             .attr('id','textA')
@@ -1206,7 +1210,7 @@
                     var text1b = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0005'] + "%")
+                        .text(d['gov0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['gov0005']) - 7)
                         .attr('id','textB')
@@ -1227,7 +1231,7 @@
                     var text1c = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0510'] + "%")
+                        .text(d['gov0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph1(d['gov0510']) - 7)
                         .attr('id','textC')
@@ -1251,7 +1255,7 @@
                         var text1j = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['priv0510'] + "%")
+                            .text(d['priv0510'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['priv0510']) - 7)
                             .attr('id','textJ')
@@ -1288,7 +1292,7 @@
                         var text1g = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['aid9500'] + "%")
+                            .text(d['aid9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['aid9500']) - 7)
                             .attr('id','textG')
@@ -1323,7 +1327,7 @@
                     var text1h = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['aid0005'] + "%")
+                        .text(d['aid0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['aid0005']) - 7)
                         .attr('id','textH')
@@ -1344,7 +1348,7 @@
                     var text1i = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['aid0510'] + "%")
+                        .text(d['aid0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph1(d['aid0510']) - 7)
                         .attr('id','textI')
@@ -1380,7 +1384,7 @@
                         var text1d = d3.select("#graph2")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gini9500'] + "%")
+                            .text(d['gini9500'])
                             .attr('x', graphWidth/5 - 10)
                             .attr('y', mapygraph2(d['gini9500']) - 15)
                             .attr('id','textD')
@@ -1415,7 +1419,7 @@
                     var text1e = d3.select("#graph2")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gini0005'] + "%")
+                        .text(d['gini0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph2(d['gini0005']) - 15)
                         .attr('id','textE')
@@ -1436,7 +1440,7 @@
                     var text1f = d3.select("#graph2")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gini0510'] + "%")
+                        .text(d['gini0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph2(d['gini0510']) - 15)
                         .attr('id','textF')
@@ -1648,8 +1652,8 @@
                     .text(d.Country);
                 
                 
-                var mapygraph1 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]);
-                var mapygraph2 = d3.scaleLinear().domain([-100, 100]).range([9*(graphWidth/10), graphWidth/10]); 
+                var mapygraph1 = d3.scaleLinear().domain([0, 4000]).range([9*(graphWidth/10), graphWidth/10]);
+                var mapygraph2 = d3.scaleLinear().domain([0, 1]).range([9*(graphWidth/10), graphWidth/10]); 
             
                 
                 for(var i = 1; i<=4; i++)
@@ -1699,7 +1703,7 @@
                             .attr("y1", graphWidth/10*5)
                             .attr("x2", graphWidth)
                             .attr("y2", graphWidth/10*5)
-                            .attr('stroke', '#212121')
+                            .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1); 
                             
                         d3.select(id)
@@ -1756,6 +1760,23 @@
                             .attr("y2", graphWidth/10*9)
                             .attr('stroke', '#eaeaea')
                             .attr('stroke-width', 1);
+                            
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth/5)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 95-00")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
+                        
+                        d3.select(id)
+                            .append("text")
+                            .attr("x", graphWidth-20)
+                            .attr("y", graphWidth/10*9.5)
+                            .text("year 05-10")
+                            .attr("text-anchor", "middle")
+                            .style("font-size", "10px");
+                            
                         }
         
                         
@@ -1768,14 +1789,6 @@
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle1");   
                 
-                d3.select("#graph1")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");   
                     
                 d3.select("#graph2")
                     .append("text")
@@ -1785,15 +1798,7 @@
                     .text("Inequality - Gini Coefficient (change over time %)")
                     .attr("text-anchor", "middle")
                     .attr("id","graphTitle2"); 
-                    
-                d3.select("#graph2")
-                    .append("text")
-                    .attr("class", "scale")
-                    .attr("x", graphWidth/5-15)
-                    .attr("y", graphWidth/10*5)
-                    .text("0")
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "10px");
+
                     
                 popupGraph(d);
                 
@@ -1838,7 +1843,7 @@
                         var text1a = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gov9500'] + "%")
+                            .text(d['gov9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['gov9500']) - 7)
                             .attr('id','textA')
@@ -1873,7 +1878,7 @@
                     var text1b = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0005'] + "%")
+                        .text(d['gov0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['gov0005']) - 7)
                         .attr('id','textB')
@@ -1894,7 +1899,7 @@
                     var text1c = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gov0510'] + "%")
+                        .text(d['gov0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph1(d['gov0510']) - 7)
                         .attr('id','textC')
@@ -1917,7 +1922,7 @@
                         var text1j = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['priv0510'] + "%")
+                            .text(d['priv0510'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['priv0510']) - 7)
                             .attr('id','textJ')
@@ -1953,7 +1958,7 @@
                         var text1g = d3.select("#graph1")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['aid9500'] + "%")
+                            .text(d['aid9500'])
                             .attr('x', graphWidth/5 - 30)
                             .attr('y', mapygraph1(d['aid9500']) - 7)
                             .attr('id','textG')
@@ -1988,7 +1993,7 @@
                     var text1h = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['aid0005'] + "%")
+                        .text(d['aid0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph1(d['aid0005']) - 7)
                         .attr('id','textH')
@@ -2009,7 +2014,7 @@
                     var text1i = d3.select("#graph1")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['aid0510'] + "%")
+                        .text(d['aid0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph1(d['aid0510']) - 7)
                         .attr('id','textI')
@@ -2046,7 +2051,7 @@
                         var text1d = d3.select("#graph2")
                             .append("text")
                             .attr('class', 'label2')
-                            .text(d['gini9500'] + "%")
+                            .text(d['gini9500'])
                             .attr('x', graphWidth/5 - 10)
                             .attr('y', mapygraph2(d['gini9500']) - 15)
                             .attr('id','textD')
@@ -2081,7 +2086,7 @@
                     var text1e = d3.select("#graph2")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gini0005'] + "%")
+                        .text(d['gini0005'])
                         .attr('x', graphWidth/5*3 - 30)
                         .attr('y', mapygraph2(d['gini0005']) - 15)
                         .attr('id','textE')
@@ -2102,7 +2107,7 @@
                     var text1f = d3.select("#graph2")
                         .append("text")
                         .attr('class', 'label2')
-                        .text(d['gini0510'] + "%")
+                        .text(d['gini0510'])
                         .attr('x', graphWidth - 30)
                         .attr('y', mapygraph2(d['gini0510']) - 15)
                         .attr('id','textF')
